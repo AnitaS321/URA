@@ -9,19 +9,9 @@ import re
 import pandas as pd
 
 def main(argv):
-    #find_command = "find /dmp/dms/processed-data/illumina/bam/20*/%s/%s*.ba* -exec ln -s '{}' %s \;" % (args.run, args.sample, args.outputdir)
-    #find_command = "find /dmp/dms/processed-data/illumina/bam/20*/%s/%s_*.bam" % (args.run, args.sample)
-    #temp change for normals below
-    #find_command = "find /dmp/dms/processed-data/illumina/bam/20*/%s/%s*.bam" % (args.run, args.sample)
 
     os.chdir(args.outputdir)
-    # if args.verbose:
-    #     print (find_command)
-    # bamfile = subprocess.run(find_command , shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-    #
-    # bfile=bamfile.stdout.rstrip()
-    # if args.verbose:
-    #     print(bfile)
+    
     bfile = "%s" % (args.file)
     blast_db = "%s" % (args.blastDB)
 
@@ -35,7 +25,6 @@ def main(argv):
         annotate()
 
 def countHHV4Reads(inputbam):
-    #cmd = "samtools view -c %s NC_007605 > %s_%s_HHVcounts.txt" % (inputbam, args.sample, args.run)
     cmd = "samtools view -c %s NC_007605" % (inputbam)
 
     if args.verbose:
@@ -59,8 +48,6 @@ def filterBlast_uniqReads():
 
 
 def annotate():
-    #use Krona functionality instead of custom perl script
-    #taxonomy IDs in 2nd column
     cmd = "%s/bin/ktGetTaxInfo -f 2 -tax %s/taxonomy/ < %s_blast.tax > %s_tmp" % (args.krona, args.krona, args.sample, args.sample)
     tmp = "%s_tmp" % (args.sample)
     if args.verbose:
@@ -128,8 +115,6 @@ def getBlastHits(blastdatabase):
     subprocess.run(cmd, shell=True)
 
 def getUnmappedReads(inputbam):
-    #cmd = "samtools view -f 0x04 -h -b %s -o %s_%s_unmapped.bam" % (inputbam, args.sample, args.run)
-    #can use samtools bam2fq for fastqs
     cmd = "samtools fasta -f 0x04 -N %s > %s_unmapped.fastq" % (inputbam, args.sample)
 
     if args.verbose:
@@ -153,7 +138,6 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--blastDB", type=str,help="Path to blast DB",required=True)
     parser.add_argument("-f", "--file", type=str,help="Input bam file (full path)",required=True)
     parser.add_argument("-s", "--sample", type=str, help="Sample Name",required=True)
-    #parser.add_argument("-r", "--run", type=str, help="full run name",required=True)
     parser.add_argument("-o", "--outputdir", type=str, help="output directory",required=True)
     parser.add_argument("-v", "--verbose", action="store_true",help="set verbose")
     parser.add_argument("-c", "--count", action="store_true", help="Count EBV reads")
