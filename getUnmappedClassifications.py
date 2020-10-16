@@ -63,37 +63,6 @@ def annotate():
     joined.to_csv(r"%s_HITS.txt" % (args.sample),index=False,sep='\t')
 
 
-def getTopHits(filtervalue):
-    currentFile = "%s_HITS.txt" % (args.sample)
-    newfile = "%s_HITS.filtered" % (args.sample)
-
-    if args.verbose:
-        print("Filtering for top hits...\n\n")
-        print(filtervalue)
-
-    nf = open(newfile,"w")
-
-    filtstr='^'+str(filtervalue)
-    filter = re.compile(filtstr,re.M)
-
-    x=range(1,filtervalue)
-    regexcmds=list()
-
-    for i in x:
-        filtstr='^'+str(i)
-        regexcmds.append(filtstr)
-
-    if os.path.isfile(currentFile):
-        with open(currentFile,"r") as fH:
-            for line in fH:
-                if not re.findall(r"(?=("+'|'.join(regexcmds)+r"))",line):
-                    nf.write(line)
-
-
-    nf.close()
-
-
-
 def runKrona():
     cmd = "%s/bin/ktClassifyBLAST -s %s_blast_filt -o %s_blast.tax" % (args.krona, args.sample, args.sample)
 
